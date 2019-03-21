@@ -19,7 +19,7 @@ public class Congelator {
         pret = p;
     }
 
-    //Afisare
+    //2. Afisare vector citit
     public static void afisare(Congelator [] con, int i)
     {
         System.out.println("Brand congelator: " + con[i].brand);
@@ -31,10 +31,55 @@ public class Congelator {
         System.out.println("------------------------------------");
     }
 
+    //3. Cautare dupa brand si pret
+    public static void cautare(Congelator [] con, int n, String brand_cautat, int pret_cautat)
+    {
+        for(int i=0; i<n; i++)
+            if(con[i].brand.equals(brand_cautat) && con[i].pret == pret_cautat)
+            {
+                System.out.println("Congelatorul cautat se afla pe pozitia: " + (i+1));
+                return;
+            }
+        System.out.println("Congelatorul cautat nu exista in vector.");
+    }
 
+    //4. Afisare dupa un anumit sistem de racire
+    public static int afisareSistemRacire(Congelator [] con, int n, String SisRacire_cautat)
+    {
+        Congelator aux;
+        for (int i=0; i<n; i++)
+            if (con[i].sistemRacire.equals(SisRacire_cautat) == false)
+            {
+                for(int j=i; j<n-1; j++)
+                    con[j] = con[j+1];
+                n--;
+            }
+        return n;
+    }
 
-    //Sortare dupa pret
-    public static void sortare(Congelator [] tel, int n)
+    //5. Stergere produse dupa consum anual de energie si culoare
+    public static int stergere(Congelator [] con, int n, int s_consEnerg, String s_cul)
+    {
+        for (int i=0; i<n; i++)
+            if (con[i].consumEnergie > s_consEnerg)
+            {
+                for (int j = i; j< n-1; j++)
+                    con[j] = con[j+1];
+                n--;
+            }
+
+        for (int i=0; i<n; i++)
+            if (con[i].culoare.equals(s_cul))
+            {
+                for (int j = i; j< n-1; j++)
+                    con[j] = con[j+1];
+                n--;
+            }
+        return n;
+    }
+
+    //6. Ordonare dupa pret
+    public static void ordonarePret(Congelator [] con, int n)
     {
         boolean ordonat;
         Congelator aux;
@@ -44,20 +89,48 @@ public class Congelator {
         {
             ordonat = true;
             for (int i=0; i<n-1; i++)
-                if(tel[i].pret > tel[i+1].pret)
+                if(con[i].pret > con[i+1].pret)
                 {
-                    aux = tel[i];
-                    tel[i] = tel[i+1];
-                    tel[i+1] = aux;
+                    aux = con[i];
+                    con[i] = con[i+1];
+                    con[i+1] = aux;
                     ordonat = false;
                 }
         }
-
         for(int i=0; i<n; i++)
-            afisare(tel, i);
+            afisare(con, i);
     }
 
-    //Main
+    //7. Matrice avand pe diagonala principala numarul de compresoare al congelatoarelor si
+    //   restul elementelor egale cu 37.
+    public static void matrice(Congelator [] con, int n)
+    {
+        int a[][] = new int[n][n];
+
+        //Creare matrice
+        for(int i = 0; i < n; i++)
+        {
+            for(int j = 0; j < n; j++)
+            {
+                if(i == j)
+                    a[i][j] = con[i].numarCompresoare;
+                else
+                    a[i][j] = 37;
+            }
+        }
+
+        // Scriere matrice
+        for(int i = 0; i < n; i++)
+        {
+            for(int j = 0; j < n; j++)
+            {
+                System.out.print(a[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    //Main method
     public static void main(String [] args) throws Exception{
 
         Congelator [] con = new Congelator[20];
@@ -96,31 +169,59 @@ public class Congelator {
             afisare(con, i);
         }
 
-        // 3. Cautare dupa...
+        // 3. Cautare dupa brand si pret
+        System.out.println("\n3. Cautare congelator dupa brand si pret: ");
+        System.out.print("Brandul cautat: ");
+        brn = br.readLine();
+        System.out.print("Pretul cautat: ");
+        prt = Integer.parseInt(br.readLine());
+        cautare(con, n, brn, prt);
 
-        // 4. Cautare dupa sistem de racire
+        // 4. Afisare dupa un anumit sistem de racire
+        System.out.println("\n4. Afisare congelatoare cu un anumit sistem de racire: ");
+        System.out.print("Sistemul de racire cautat: ");
+        sisR = br.readLine();
+        n = afisareSistemRacire(con, n, sisR);
+        System.out.println();
+
+        for (int i=0; i<n; i++)
+            afisare(con, i);
 
         // 5. Stergere dupa consum anual de energie si culoare
+        System.out.println("\n5. Introduceti consumul de energie maxim dorit si culoarea care nu va intereseaza: ");
+        System.out.print("Consumul maxim dorit (kWh): ");
+        cnsE = Integer.parseInt(br.readLine());
+        System.out.print("Culoarea care nu va intereseaza: ");
+        cul = br.readLine();
 
-        // 6. Sortare dupa pret
+        n = stergere(con, n, cnsE, cul);
+        System.out.println();
+
+        for (int i=0; i<n;i++)
+            afisare(con, i);
+
+        // 6. Ordonare dupa pret
         System.out.println("\n6. Lista congelatoarelor sortate crescator dupa pret: \n");
-        sortare(con, n);
+        ordonarePret(con, n);
 
-        // 7. Matrice diagonala principala numar compresoare si restul elementelor nr. 37
-
+        // 7. Matrice - diagonala principala numar compresoare si restul elementelor nr. 37
+        System.out.println("\n7. Matricea este: ");
+        matrice(con, n);
     }
 
 }
 
-/* Exemple de date de intrare, luate de pe siteul Emag:
+/* Exemple de date de intrare, luate de pe site-ul Emag:
 
         Brand           Numar compresoare       Sistem racire       Consum energie      Culoare     Pret
-1.      Arctic          1                       Static              257 kWh             Alb         1184 RON
+1.      Arctic          2                       Static              257 kWh             Argintiu    1184 RON
 2.      Electrolux      1                       No Frost            258 kWh             Alb         1899 RON
-3.      Star-Light      1                       Static              238 kWh             Alb         850 RON
-4.      Gorenje         1                       Static              252 kWh             Alb         1780 RON
-5.      Beko            2                       No Frost            326 kWh             Argintiu    1680 RON
-6.      Heinner         1                       Static              223 kWh             Alb         949 RON
+3.      Star-Light      2                       Static              238 kWh             Gri         1850 RON
+4.      Gorenje         1                       Static              252 kWh             Argintiu    1780 RON
+5.      Beko            1                       Static              326 kWh             Alb         1680 RON
+6.      Heinner         2                       Static              223 kWh             Gri         949 RON
 7.      Liebherr        2                       Smart Frost         175 kWh             Alb         3036 RON
 8.      Zanussi         1                       Static              248 kWh             Gri         1421 RON
+9.      Miele           1                       Static              241 kWh             Alb         2100 RON
+10.     Whirlpool       1                       Static              219 kWh             Argintiu    1700 RON
 */
