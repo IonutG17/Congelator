@@ -1,7 +1,7 @@
 import java.io.*;
 
 public class Congelator {
-    private String brand; //model?! adica numele gen Zanussi A380...or someth?!
+    private String brand; 
     private int numarCompresoare;
     private String sistemRacire;
     private int consumEnergie;
